@@ -1,5 +1,6 @@
 package com.pluralsight;
 import java.awt.print.Book;
+import java.io.*;
 import java.util.*;
 public class SearchInventory {
     public static void main(String[] args) {
@@ -13,18 +14,27 @@ public class SearchInventory {
         }
     }
     public static ArrayList<Product> getInventory() {
-        ArrayList<Product> inventory = new ArrayList<Product>();
-        inventory.add(new Product(5158, "Book", 14.32f));
-        inventory.add(new Product( 5416, "Music", 26.92f));
-        inventory.add(new Product(9832, "Trinkets and Shinies", 367.51f));
-        inventory.add(new Product(6347, "Snacks", 4.58f));
-        inventory.add(new Product(2482, "Oddities", 554.73f));
+        try {
+            BufferedReader bufRead = new BufferedReader( new FileReader("src/main/resources/Inventory.csv"));
+            String input;
+            ArrayList<Product> inventory = new ArrayList<Product>();
+            while((input = bufRead.readLine()) != null) {
+                String [] categories = input.split("\\|");
+                int productId = Integer.parseInt(categories[0]);
+                String productName = categories[1];
+                float productPrice = Float.parseFloat(categories[2]);
+                inventory.add(new Product(productId, productName, productPrice));
+            }
 
 // this method loads product objects into inventory
 // and its details are not shown
-        return inventory;
+            return inventory;
+        }
+        catch (IOException error) {
+            error.printStackTrace();
+            return new ArrayList<Product>();
+        }
+
+     }
     }
 
-
-
-}
